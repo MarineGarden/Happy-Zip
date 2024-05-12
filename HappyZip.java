@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class HappyZip {
 	
-	public static abstract class NotZeroLength<T> {
+public static abstract class NotZeroLength<T> {
 		
 		private T[] any;
 		
@@ -27,58 +27,122 @@ public class HappyZip {
 		
 	}
 	
-//	public static class First {
-//		
-//		public static Boolean read( Boolean[] bits ) {
-//			
-//			
-//			
-//		}
-//		
-//	}
+	public static class First {
+		
+		public static Boolean read( NotZeroLength<Boolean> bits ) {
+			
+			return bits.get()[ 0 ];
+			
+		}
+		
+		public static Boolean[] write( NotZeroLength<Boolean> bits , Boolean first ) {
+			
+			Boolean[] result = bits.get();
+			result[ 0 ] = first;
+			return result;
+			
+		}
+		
+	}
 	
-//	public static class Same {
-//		
-//		public static int fromFirst( Boolean[] bits ) {
-//			
-//			if ( bits.length > 0) {
-//				
-//				int counter = 0;
-//				Boolean first = bits[ 0 ];
-//				return -1;
-//				
-//			}
-//			return 0;
-//			
-//		}
-//		
-//	}
+	public static class Counter {
+		
+		private int value = 0;
+		
+		public boolean check( boolean suitable ) {
+			
+			if ( suitable )
+				value++;
+			return suitable;
+			
+		}
+		
+		public int getCounts() {
+			
+			return value;
+			
+		}
+		
+		public void reset() {
+			
+			value = 0;
+			
+		}
+		
+	}
+	
+	public static class Same extends Counter {
+		
+		public int fromFirst( NotZeroLength<Boolean> bits ) {
+			
+			reset(); // safety first
+			for ( Boolean bit : bits.get() )
+				if ( ! check( First.read( bits ) == bit ) )
+					break;
+			return getCounts();
+			
+		}
+		
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		NotZeroLength<Boolean> bits = new NotZeroLength<Boolean>( new Boolean[] {} ) {
 
-			@Override
-			public Boolean[] useDefault() {
+		// NotZeroLength test
+				NotZeroLength<Boolean> bits = new NotZeroLength<Boolean>( new Boolean[] {} ) {
 
-				return new Boolean[] { false };
+					@Override
+					public Boolean[] useDefault() {
+
+						return new Boolean[] { false };
+						
+					}
+					
+				};
+				System.out.println( Arrays.asList( bits.get() ).toString().equals( "[false]" ) );
+				bits = new NotZeroLength<Boolean>( new Boolean[] { true } ) {
+					
+					@Override
+					public Boolean[] useDefault() {
+
+						return new Boolean[] { false };
+						
+					}
+					
+				};
+				System.out.println( Arrays.asList( bits.get() ).toString().equals( "[true]" ) );
 				
-			}
-			
-		};
-		System.out.println( Arrays.asList( bits.get() ).toString().equals( "[false]" ) );
-		bits = new NotZeroLength<Boolean>( new Boolean[] { true } ) {
-			
-			@Override
-			public Boolean[] useDefault() {
+				// First test
+				bits = new NotZeroLength<Boolean>( new Boolean[] { true , false } ) {
+					
+					@Override
+					public Boolean[] useDefault() {
 
-				return new Boolean[] { false };
+						return new Boolean[] { false };
+						
+					}
+					
+				};
+				System.out.println( First.read( bits ) );
+				First.write( bits , false );
+				System.out.println( ! First.read( bits ) );
 				
-			}
-			
-		};
-		System.out.println( Arrays.asList( bits.get() ).toString().equals( "[true]" ) );
-		//System.out.println( HappyZip.Same.fromFirst( new Boolean[] {} ) == 0 );
+				// Counter test
+				Counter c = new Counter();
+				while ( c.getCounts() < 3 )
+					c.check( true );
+				System.out.println( c.getCounts() == 3 );
+				c.reset();
+				while ( c.getCounts() < 2 )
+					c.check( true );
+				System.out.println( c.getCounts() == 2 );
+				
+				// Same test
+				System.out.println( Arrays.asList( bits.get() ) );
+				Same s = new Same();
+				System.out.println( s.fromFirst( bits ) == 2 );
+				First.write( bits , true );
+				System.out.println( s.fromFirst( bits ) == 1 );
 	}
 
 }
