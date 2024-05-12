@@ -2,6 +2,7 @@ package gadget;
 
 import java.util.Arrays;
 
+import gadget.HappyZip.Counter;
 import gadget.HappyZip.NotZeroLength;
 
 public class HappyZip2 {
@@ -29,11 +30,38 @@ public class HappyZip2 {
 		
 	}
 	
-	public static class Booleans extends NotZeroLength<Boolean> {
+public static class Counter {
+		
+		private int value = 0;
+		
+		public boolean check( boolean suitable ) {
+			
+			if ( suitable )
+				value++;
+			return suitable;
+			
+		}
+		
+		public int getCounts() {
+			
+			return value;
+			
+		}
+		
+		public void reset() {
+			
+			value = 0;
+			
+		}
+		
+	}
+	
+	public static class DoubleBooleans extends NotZeroLength<Boolean> {
 
-		public Booleans( Boolean[] any ) {
+		public DoubleBooleans( Boolean[] any ) {
 			
 			super( any );
+			//super( new Boolean[ any.length*2 ] )
 			
 		}
 
@@ -43,12 +71,42 @@ public class HappyZip2 {
 			return new Boolean[] { false };
 			
 		}
-		
-		public Boolean[] flip( int start , int finish ) {
+
+		@Override
+		public Boolean[] get() {
 			
-			
+			Boolean[] bits = super.get();
+			Boolean[] doubleBits = new Boolean[ bits.length*2 ];
+			for ( int i = 0 ; i < bits.length ; i++ )
+				doubleBits[ i + bits.length ] = doubleBits[ i ] = bits[ i ];
+			return doubleBits;
 			
 		}
+		
+		// flip method
+		
+//		public Boolean[] flip( int start , int finish ) {
+//			
+//			Boolean[] bits = get();
+//			Boolean[] doubleBits = new Boolean[ bits.length*2 ];
+//			Counter c = new Counter();
+//			while ( c.getCounts() < bits.length ) {
+//				
+//				int index = c.getCounts();
+//				c.check( bits[ index ] );
+//				doubleBits[ index ] = ! bits[ index ];
+//				doubleBits[ index*2 ] = doubleBits[ index ];
+//				
+//			}
+//			if ( start <= bits.length && start > -1 )
+//				if ( finish <= bits.length && finish > -1 )
+//					if ( finish >= start )
+//						return Arrays.copyOfRange( doubleBits , start , finish );
+//					else
+//						return Arrays.copyOfRange( doubleBits , start , finish + bits.length );
+//			return Arrays.copyOfRange( doubleBits , 0 , doubleBits.length );
+//			
+//		}
 		
 	}
 
@@ -78,6 +136,21 @@ public class HappyZip2 {
 			
 		};
 		System.out.println( Arrays.asList( bits.get() ).toString().equals( "[true]" ) );
+		
+		// Counter test
+		Counter c = new Counter();
+		while ( c.getCounts() < 3 )
+			c.check( true );
+		System.out.println( c.getCounts() == 3 );
+		c.reset();
+		while ( c.getCounts() < 2 )
+			c.check( true );
+		System.out.println( c.getCounts() == 2 );
+		
+		// DoubleBooleans test
+		System.out.println( Arrays.asList( bits.get() ) );
+		DoubleBooleans doubleBits = new DoubleBooleans( bits.get() );
+		System.out.println( Arrays.asList( doubleBits.get() ).toString().equals( "[true, true]" ) );
 		
 	}
 
