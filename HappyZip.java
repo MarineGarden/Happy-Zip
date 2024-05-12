@@ -84,6 +84,17 @@ public static abstract class NotZeroLength<T> {
 		}
 		
 	}
+	
+	public static class One extends Same {
+		
+//		public Boolean[] truely( NotZeroLength<Boolean> bits ) {
+//			
+//			boolean oneBitOnly = fromFirst( bits ) == 1;
+//			if ( ! oneBitOnly )
+//			
+//		}
+		
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
