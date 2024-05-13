@@ -144,14 +144,20 @@ public class HappyZip3 {
 			
 		}
 		
+		private Boolean[] copyTheFlip( int start , int finish ) {
+			
+			return Arrays.copyOfRange( flip() , start , finish );
+			
+		}
+		
 		public Boolean[] doTask( int start , int finish ) {
 			
 			switch ( classify( start , finish ) ) {
 			
-				case OUTSIDE: return Arrays.copyOfRange( flip() , 0 , boundaries.width );
-				case UPPER_TRIANGLE: return Arrays.copyOfRange( flip() , start , finish );
-				case BOTTOM_TRIANGLE: return Arrays.copyOfRange( flip() , start , finish + boundaries.width );
-				case BOUNDARIES: return Arrays.copyOfRange( flip() , start , finish );
+				case OUTSIDE: return copyTheFlip( 0 , boundaries.width );
+				case UPPER_TRIANGLE: return copyTheFlip( start , finish );
+				case BOTTOM_TRIANGLE: return copyTheFlip( start , finish + boundaries.width );
+				case BOUNDARIES: return copyTheFlip( start , finish );
 				default: return useDefault();
 			
 			}
