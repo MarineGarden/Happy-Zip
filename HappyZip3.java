@@ -1,9 +1,12 @@
 package gadget;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Arrays;
 
 import gadget.HappyZip2.NotZeroLength;
 
+@SuppressWarnings("serial")
 public class HappyZip3 {
 	
 public static abstract class NotZeroLength<T> {
@@ -67,6 +70,45 @@ public static abstract class NotZeroLength<T> {
 			return result;
 			
 		}
+		
+	}
+	
+	public static class YinYangRect extends Rectangle {
+		
+		//  y                          slope : x = y
+		//  
+		//  oooooooooo
+		//  o               o  o
+		//  o           o      o
+		//  o       o          o
+		//  o   o              o
+		//  oooooooooo   x
+		
+		public YinYangRect( int minX , int maxX , int minY , int maxY ) {
+			
+			super( minX , minY , maxX - minX , maxY - minY );
+			
+		}
+		
+		public boolean isOutside( Point p ) {
+			
+			return ( p.x < x || p.x > x + width ) || ( p.y < y || p.y > y + height );
+			
+		}
+		
+		public boolean isUpperTriangle( Point p ) {
+			
+			return p.y > p.x;
+			
+		}
+		
+		public boolean isBottomTriangle( Point p ) {
+			
+			return p.x > p.y;
+			
+		}
+		
+	}
 	
 //	public Boolean[] flip( int start , int finish ) {
 //		
@@ -90,8 +132,6 @@ public static abstract class NotZeroLength<T> {
 //		return Arrays.copyOfRange( doubleBits , 0 , doubleBits.length );
 //		
 //	}
-	
-}
 
 	public static void main(String[] args) {
 		// TODO
@@ -135,6 +175,21 @@ public static abstract class NotZeroLength<T> {
 		DoubleBooleans doubleBits = new DoubleBooleans( bits.get() );
 		System.out.println( Arrays.asList( doubleBits.get() ).toString().equals( "[true, false, true, false]" ) );
 		System.out.println( Arrays.asList( doubleBits.flip() ).toString().equals( "[false, true, false, true]" ) );
+		
+		// YinYangRect test
+		YinYangRect rect = new YinYangRect( 0 , 3 , 0 , 3 );
+		Point outsideLeft = new Point( -1 , 1 );
+		Point outsideRight = new Point( 4 , 1 );
+		Point outsideTop = new Point( 1 , 4 );
+		Point outsideBottom = new Point( 1 , -1 );
+		Point insideUpperPart = new Point( 1 , 2 );
+		Point insideBottomPart = new Point( 2 , 1 );
+		System.out.println( rect.isOutside( outsideTop ) );
+		System.out.println( rect.isOutside( outsideRight ) );
+		System.out.println( rect.isOutside( outsideBottom ) );
+		System.out.println( rect.isOutside( outsideLeft ) );
+		System.out.println( rect.isUpperTriangle( insideUpperPart ) );
+		System.out.println( rect.isBottomTriangle( insideBottomPart ) );
 	}
 
 }
