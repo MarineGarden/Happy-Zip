@@ -4,12 +4,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Arrays;
 
-import gadget.HappyZip2.NotZeroLength;
-
 @SuppressWarnings("serial")
 public class HappyZip3 {
 	
-public static abstract class NotZeroLength<T> {
+	public static abstract class NotZeroLength<T> {
 		
 		private T[] any;
 		
@@ -98,123 +96,142 @@ public static abstract class NotZeroLength<T> {
 		
 		public boolean isUpperTriangle( Point p ) {
 			
-			return p.y > p.x;
+			return p.y > p.x && p.x > x && p.y < y + height;
 			
 		}
 		
 		public boolean isBottomTriangle( Point p ) {
 			
-			return p.x > p.y;
+			return p.x > p.y && p.y > y && p.x < x + width;
+			
+		}
+		
+		public enum YinYangLocation {
+			
+			OUTSIDE, UPPER_TRIANGLE, BOTTOM_TRIANGLE, BOUNDARIES
+			
+		}
+		
+		public YinYangLocation where( Point p ) {
+			
+			if ( isOutside( p ) )
+				return YinYangLocation.OUTSIDE;
+			if ( isUpperTriangle( p ) )
+				return YinYangLocation.UPPER_TRIANGLE;
+			if ( isBottomTriangle( p ) )
+				return YinYangLocation.BOTTOM_TRIANGLE;
+			
+			return YinYangLocation.BOUNDARIES;
 			
 		}
 		
 	}
 	
-	public static class Flip extends NotZeroLength<Boolean> {
+	public static class Flip extends DoubleBooleans {
+		
+		private YinYangRect boundaries;
 		
 		public Flip( Boolean[] bits ) {
 			
 			super( bits );
-			
-		}
-
-		@Override
-		public Boolean[] useDefault() {
-
-			return new Boolean[] { false };
+			boundaries = new YinYangRect( 0 , bits.length , 0 , bits.length );
 			
 		}
 		
-//		public Boolean[] doTask( int start , int finish ) {
-//			
-//			Boolean[] bits = get();
-//			YinYangRect boundaries = new YinYangRect( -1 , bits.length + 1 , -1 , bits.length + 1 );
-//			
-//			
-//		}
+		public YinYangRect.YinYangLocation classify( int start , int finish ) {
+			
+			return boundaries.where( new Point( start , finish ) );
+			
+		}
+		
+		public Boolean[] doTask( int start , int finish ) {
+			
+			switch ( classify( start , finish ) ) {
+			
+				case OUTSIDE: return Arrays.copyOfRange( flip() , 0 , boundaries.width );
+				case UPPER_TRIANGLE: return Arrays.copyOfRange( flip() , start , finish );
+				case BOTTOM_TRIANGLE: return Arrays.copyOfRange( flip() , start , finish + boundaries.width );
+				case BOUNDARIES: return Arrays.copyOfRange( flip() , start , finish );
+				default: return useDefault();
+			
+			}
+			
+		}
 		
 	}
-	
-//	public Boolean[] flip( int start , int finish ) {
-//		
-//		Boolean[] bits = get();
-//		Boolean[] doubleBits = new Boolean[ bits.length*2 ];
-//		Counter c = new Counter();
-//		while ( c.getCounts() < bits.length ) {
-//			
-//			int index = c.getCounts();
-//			c.check( bits[ index ] );
-//			doubleBits[ index ] = ! bits[ index ];
-//			doubleBits[ index*2 ] = doubleBits[ index ];
-//			
-//		}
-//		if ( start <= bits.length && start > -1 )
-//			if ( finish <= bits.length && finish > -1 )
-//				if ( finish >= start )
-//					return Arrays.copyOfRange( doubleBits , start , finish );
-//				else
-//					return Arrays.copyOfRange( doubleBits , start , finish + bits.length );
-//		return Arrays.copyOfRange( doubleBits , 0 , bits.length );
-//		
-//	}
 
 	public static void main(String[] args) {
 		// TODO
 
-		// NotZeroLength test
-		NotZeroLength<Boolean> bits = new NotZeroLength<Boolean>( new Boolean[] {} ) {
+				// NotZeroLength test
+				NotZeroLength<Boolean> bits = new NotZeroLength<Boolean>( new Boolean[] {} ) {
 
-			@Override
-			public Boolean[] useDefault() {
+					@Override
+					public Boolean[] useDefault() {
 
-				return new Boolean[] { false };
-						
-			}
-					
-		};
-		System.out.println( Arrays.asList( bits.get() ).toString().equals( "[false]" ) );
-		bits = new NotZeroLength<Boolean>( new Boolean[] { true } ) {
-					
-			@Override
-			public Boolean[] useDefault() {
+						return new Boolean[] { false };
+								
+					}
+							
+				};
+				System.out.println( Arrays.asList( bits.get() ).toString().equals( "[false]" ) );
+				bits = new NotZeroLength<Boolean>( new Boolean[] { true } ) {
+							
+					@Override
+					public Boolean[] useDefault() {
 
-				return new Boolean[] { false };
-						
-			}
+						return new Boolean[] { false };
+								
+					}
+							
+				};
+				System.out.println( Arrays.asList( bits.get() ).toString().equals( "[true]" ) );
+				bits = new NotZeroLength<Boolean>( new Boolean[] { true , false } ) {
 					
-		};
-		System.out.println( Arrays.asList( bits.get() ).toString().equals( "[true]" ) );
-		bits = new NotZeroLength<Boolean>( new Boolean[] { true , false } ) {
-			
-			@Override
-			public Boolean[] useDefault() {
+					@Override
+					public Boolean[] useDefault() {
 
-				return new Boolean[] { false };
-						
-			}
-					
-		};
-		System.out.println( Arrays.asList( bits.fill( new Boolean[ 5 ] ) ).toString().equals( "[true, false, true, false, true]" ) );
-		
-		// DoubleBooleans test
-		DoubleBooleans doubleBits = new DoubleBooleans( bits.get() );
-		System.out.println( Arrays.asList( doubleBits.get() ).toString().equals( "[true, false, true, false]" ) );
-		System.out.println( Arrays.asList( doubleBits.flip() ).toString().equals( "[false, true, false, true]" ) );
-		
-		// YinYangRect test
-		YinYangRect rect = new YinYangRect( 0 , 3 , 0 , 3 );
-		Point outsideLeft = new Point( -1 , 1 );
-		Point outsideRight = new Point( 4 , 1 );
-		Point outsideTop = new Point( 1 , 4 );
-		Point outsideBottom = new Point( 1 , -1 );
-		Point insideUpperPart = new Point( 1 , 2 );
-		Point insideBottomPart = new Point( 2 , 1 );
-		System.out.println( rect.isOutside( outsideTop ) );
-		System.out.println( rect.isOutside( outsideRight ) );
-		System.out.println( rect.isOutside( outsideBottom ) );
-		System.out.println( rect.isOutside( outsideLeft ) );
-		System.out.println( rect.isUpperTriangle( insideUpperPart ) );
-		System.out.println( rect.isBottomTriangle( insideBottomPart ) );
+						return new Boolean[] { false };
+								
+					}
+							
+				};
+				System.out.println( Arrays.asList( bits.fill( new Boolean[ 5 ] ) ).toString().equals( "[true, false, true, false, true]" ) );
+				
+				// DoubleBooleans test
+				DoubleBooleans doubleBits = new DoubleBooleans( bits.get() );
+				System.out.println( Arrays.asList( doubleBits.get() ).toString().equals( "[true, false, true, false]" ) );
+				System.out.println( Arrays.asList( doubleBits.flip() ).toString().equals( "[false, true, false, true]" ) );
+				
+				// YinYangRect test
+				YinYangRect rect = new YinYangRect( 0 , 3 , 0 , 3 );
+				Point outsideLeft = new Point( -1 , 1 );
+				Point outsideRight = new Point( 4 , 1 );
+				Point outsideTop = new Point( 1 , 4 );
+				Point outsideBottom = new Point( 1 , -1 );
+				Point insideUpperPart = new Point( 1 , 2 );
+				Point insideBottomPart = new Point( 2 , 1 );
+				Point onTheBoundary = new Point( 2 , 2 );
+				System.out.println( rect.isOutside( outsideTop ) );
+				System.out.println( rect.isOutside( outsideRight ) );
+				System.out.println( rect.isOutside( outsideBottom ) );
+				System.out.println( rect.isOutside( outsideLeft ) );
+				System.out.println( rect.isUpperTriangle( insideUpperPart ) );
+				System.out.println( rect.isBottomTriangle( insideBottomPart ) );		
+				System.out.println( rect.where( outsideTop ).name().equals( "OUTSIDE" ) );
+				System.out.println( rect.where( outsideRight ).name().equals( "OUTSIDE" ) );
+				System.out.println( rect.where( outsideBottom ).name().equals( "OUTSIDE" ) );
+				System.out.println( rect.where( outsideLeft ).name().equals( "OUTSIDE" ) );
+				System.out.println( rect.where( insideUpperPart ).name().equals( "UPPER_TRIANGLE" ) );
+				System.out.println( rect.where( insideBottomPart ).name().equals( "BOTTOM_TRIANGLE" ) );
+				System.out.println( rect.where( onTheBoundary ).name().equals( "BOUNDARIES" ) );
+				
+				// Flip test
+				Flip f = new Flip( new Boolean[] { true , true , false , true , true } );
+				System.out.println( f.classify( 1 , 3 ).name() + " : " + Arrays.asList( f.doTask( 1 , 3 ) ).toString().equals( "[false, true]" ) );
+				System.out.println( f.classify( 3 , 1 ).name() + " : " + Arrays.asList( f.doTask( 3 , 1 ) ).toString().equals( "[false, false, false]" ) );
+				System.out.println( f.classify( 1 , 5 ).name() + " : " + Arrays.asList( f.doTask( 1 , 5 ) ).toString().equals( "[false, true, false, false]" ) );
+				System.out.println( f.classify( 1 , 6 ).name() + " : " + Arrays.asList( f.doTask( 1 , 6 ) ).toString().equals( "[false, false, true, false, false]" ) );
 	}
 
 }
