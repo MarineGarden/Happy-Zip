@@ -2,9 +2,6 @@ package gadget;
 
 import java.util.Arrays;
 
-import gadget.HappyZip.Counter;
-import gadget.HappyZip.NotZeroLength;
-
 public class HappyZip2 {
 	
 	public static abstract class NotZeroLength<T> {

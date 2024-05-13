@@ -4,10 +4,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Arrays;
 
-import gadget.HappyZip3.DoubleBooleans;
-import gadget.HappyZip3.NotZeroLength;
-import gadget.HappyZip3.YinYangRect;
-
 @SuppressWarnings("serial")
 public class HappyZip4 {
 	
@@ -133,53 +129,30 @@ public class HappyZip4 {
 	
 	public static class Flip extends DoubleBooleans {
 		
+		private YinYangRect boundaries;
+		
 		public Flip( Boolean[] bits ) {
 			
 			super( bits );
+			boundaries = new YinYangRect( 0 , bits.length , 0 , bits.length );
+			
+		}
+		
+		public YinYangRect.YinYangLocation classify( int start , int finish ) {
+			
+			return boundaries.where( new Point( start , finish ) );
 			
 		}
 		
 		public Boolean[] doTask( int start , int finish ) {
 			
-			flip();
-			Boolean[] doubleBits = get();
-			YinYangRect boundaries = new YinYangRect( 0 , doubleBits.length , 0 , doubleBits.length );
-			switch ( boundaries.where( new Point( start , finish ) ) ) {
+			switch ( classify( start , finish ) ) {
 			
-				case OUTSIDE: {
-					
-					Boolean[] want = Arrays.copyOfRange( doubleBits , 0 , doubleBits.length/2 );
-					flip();
-					return want;
-					
-				}
-				
-				case UPPER_TRIANGLE: {
-					
-					Boolean[] want = Arrays.copyOfRange( doubleBits , start , finish );
-					flip();
-					return want;
-					
-				}
-				
-				case BOTTOM_TRIANGLE: {
-					
-					Boolean[] want = Arrays.copyOfRange( doubleBits , start , finish + doubleBits.length/2 );
-					flip();
-					return want;
-					
-				}
-				
-				case BOUNDARIES: {
-					
-					Boolean[] want = Arrays.copyOfRange( doubleBits , start , finish );
-					flip();
-					return want;
-					
-				}
-				
-				default:
-					return useDefault();
+				case OUTSIDE: return Arrays.copyOfRange( flip() , 0 , boundaries.width );
+				case UPPER_TRIANGLE: return Arrays.copyOfRange( flip() , start , finish );
+				case BOTTOM_TRIANGLE: return Arrays.copyOfRange( flip() , start , finish + boundaries.width );
+				case BOUNDARIES: return Arrays.copyOfRange( flip() , start , finish );
+				default: return useDefault();
 			
 			}
 			
@@ -252,6 +225,13 @@ public class HappyZip4 {
 				System.out.println( rect.where( insideUpperPart ).name().equals( "UPPER_TRIANGLE" ) );
 				System.out.println( rect.where( insideBottomPart ).name().equals( "BOTTOM_TRIANGLE" ) );
 				System.out.println( rect.where( onTheBoundary ).name().equals( "BOUNDARIES" ) );
+				
+				// Flip test
+				Flip f = new Flip( new Boolean[] { true , true , false , true , true } );
+				System.out.println( f.classify( 1 , 3 ).name() + " : " + Arrays.asList( f.doTask( 1 , 3 ) ).toString().equals( "[false, true]" ) );
+				System.out.println( f.classify( 3 , 1 ).name() + " : " + Arrays.asList( f.doTask( 3 , 1 ) ).toString().equals( "[false, false, false]" ) );
+				System.out.println( f.classify( 1 , 5 ).name() + " : " + Arrays.asList( f.doTask( 1 , 5 ) ).toString().equals( "[false, true, false, false]" ) );
+				System.out.println( f.classify( 1 , 6 ).name() + " : " + Arrays.asList( f.doTask( 1 , 6 ) ).toString().equals( "[false, false, true, false, false]" ) );
 	}
 
 }
