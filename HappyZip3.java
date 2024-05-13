@@ -110,6 +110,29 @@ public static abstract class NotZeroLength<T> {
 		
 	}
 	
+	public static class Flip extends NotZeroLength<Boolean> {
+		
+		public Flip( Boolean[] bits ) {
+			
+			super( bits );
+			
+		}
+
+		@Override
+		public Boolean[] useDefault() {
+
+			return new Boolean[] { false };
+			
+		}
+		
+		public Boolean[] doTask( int start , int finish ) {
+			
+			YinYangRect boundaries = new 
+			
+		}
+		
+	}
+	
 //	public Boolean[] flip( int start , int finish ) {
 //		
 //		Boolean[] bits = get();
