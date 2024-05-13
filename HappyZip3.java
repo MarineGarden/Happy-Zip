@@ -125,11 +125,13 @@ public static abstract class NotZeroLength<T> {
 			
 		}
 		
-		public Boolean[] doTask( int start , int finish ) {
-			
-			YinYangRect boundaries = new 
-			
-		}
+//		public Boolean[] doTask( int start , int finish ) {
+//			
+//			Boolean[] bits = get();
+//			YinYangRect boundaries = new YinYangRect( -1 , bits.length + 1 , -1 , bits.length + 1 );
+//			
+//			
+//		}
 		
 	}
 	
@@ -152,7 +154,7 @@ public static abstract class NotZeroLength<T> {
 //					return Arrays.copyOfRange( doubleBits , start , finish );
 //				else
 //					return Arrays.copyOfRange( doubleBits , start , finish + bits.length );
-//		return Arrays.copyOfRange( doubleBits , 0 , doubleBits.length );
+//		return Arrays.copyOfRange( doubleBits , 0 , bits.length );
 //		
 //	}
 
