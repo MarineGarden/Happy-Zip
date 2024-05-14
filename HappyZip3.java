@@ -165,6 +165,32 @@ public class HappyZip3 {
 		}
 		
 	}
+	
+	public static class Counter {
+		
+		private int value = 0;
+		
+		public boolean check( boolean suitable ) {
+			
+			if ( suitable )
+				value++;
+			return suitable;
+			
+		}
+		
+		public int getCounts() {
+			
+			return value;
+			
+		}
+		
+		public void reset() {
+			
+			value = 0;
+			
+		}
+		
+	}
 
 	public static void main(String[] args) {
 		// TODO
@@ -238,6 +264,16 @@ public class HappyZip3 {
 				System.out.println( f.classify( 3 , 1 ).name() + " : " + Arrays.asList( f.doTask( 3 , 1 ) ).toString().equals( "[false, false, false]" ) );
 				System.out.println( f.classify( 1 , 5 ).name() + " : " + Arrays.asList( f.doTask( 1 , 5 ) ).toString().equals( "[false, true, false, false]" ) );
 				System.out.println( f.classify( 1 , 6 ).name() + " : " + Arrays.asList( f.doTask( 1 , 6 ) ).toString().equals( "[false, false, true, false, false]" ) );
+				
+				// Counter test
+				Counter c = new Counter();
+				while ( c.getCounts() < 3 )
+					c.check( true );
+				System.out.println( c.getCounts() == 3 );
+				c.reset();
+				while ( c.getCounts() < 2 )
+					c.check( true );
+				System.out.println( c.getCounts() == 2 );
 	}
 
 }

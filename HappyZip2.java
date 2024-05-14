@@ -27,7 +27,7 @@ public class HappyZip2 {
 		
 	}
 	
-public static class Counter {
+	public static class Counter {
 		
 		private int value = 0;
 		
@@ -58,7 +58,7 @@ public static class Counter {
 		public DoubleBooleans( Boolean[] any ) {
 			
 			super( any );
-			//super( new Boolean[ any.length*2 ] )
+			//super( new Boolean[ any.length*2 ] );
 			
 		}
 
