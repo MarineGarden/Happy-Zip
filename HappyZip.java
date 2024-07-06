@@ -19,8 +19,8 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 	
 	public static void main( String[] args ) {
 
-		new HappyZip();
-		
+		HappyZip test = new HappyZip();
+		System.out.println( test.testForIsAnnotatedMethod() );
 	}
 	
 	@Override
@@ -29,6 +29,25 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 	@Override
 	public void mouseMoved( MouseEvent event ) {}
 
+	private boolean testForIsAnnotatedMethod() {
+		
+		try {
+			
+			boolean AmethodTest = isAnnotatedMethod( MockB.class.getDeclaredMethod( "forTestA" ) );
+			boolean BmethodTest = ! isAnnotatedMethod( MockB.class.getDeclaredMethod( "forTestB" ) );
+			return AmethodTest && BmethodTest;
+			
+		} catch ( NoSuchMethodException | SecurityException e ) { e.printStackTrace(); }
+		
+		return false;
+		
+	}
+	private boolean isAnnotatedMethod( Method any ) {
+		
+		return any.getAnnotations().length > 0;
+		
+	}
+	
 	private boolean testForHasMethods() {
 		
 		return ( ! hasMethods( MockA.class ) ) && ( hasMethods( MockB.class ) );
@@ -45,13 +64,30 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 	private static class MockA {}
 	private static class MockB {
 		
-		private void forTest() {}
+		@Tested( testClass = "" , expected = "" )
+		private void forTestA() {}
+		
+		private void forTestB() {}
 		
 	}
 	
 	private static class TestableBlock implements Testable {
 		
+		protected boolean oldTests = true;
 		
+		private TestableBlock( boolean newTest ) {
+			
+			try {
+				
+				oldTests = test( newTest , oldTests);
+				
+			} catch ( BrokenGearException e ) {
+				
+				e.printStackTrace( System.out );
+				
+			}
+			
+		}
 		
 	}
 	private interface Testable {
@@ -91,7 +127,8 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 	@Target({ FIELD , METHOD , CONSTRUCTOR })
 	private @interface Tested {
 
-		String test();
+		String testClass();
+		String expected();
 		
 	}
 
