@@ -1,8 +1,15 @@
 package gadget;
 
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.PrintStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
 import javax.swing.JFrame;
@@ -44,11 +51,7 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 	
 	private static class TestableBlock implements Testable {
 		
-		try {
-			
-			
-			
-		} catch ( BrokenGearException e ) {}
+		
 		
 	}
 	private interface Testable {
@@ -82,6 +85,14 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 			
 		}
 
+	}
+	
+	@Retention( RUNTIME )
+	@Target({ FIELD , METHOD , CONSTRUCTOR })
+	private @interface Tested {
+
+		String test();
+		
 	}
 
 }
