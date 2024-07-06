@@ -29,6 +29,23 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 	@Override
 	public void mouseMoved( MouseEvent event ) {}
 
+	private boolean testForHasMethodAnnotations() {
+		
+		boolean AmethodTest = 
+		
+		return false;
+		
+	}
+	private boolean hasMethodAnnotations( Class<?> any ) {
+		
+		if ( hasMethods( any ) )
+			for ( Method mockBmethod : any.getDeclaredMethods() )
+				if ( mockBmethod.getAnnotations().length > 0 )
+					return true;
+		return false;
+		
+	}
+	
 	private boolean testForIsAnnotatedMethod() {
 		
 		try {
@@ -68,6 +85,11 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 		private void forTestA() {}
 		
 		private void forTestB() {}
+		
+	}
+	private static class MockC {
+		
+		private void forTestA() {}
 		
 	}
 	
