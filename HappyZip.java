@@ -16,10 +16,10 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 	}
 	
 	@Override
-	public void mouseDragged( MouseEvent e ) {}
+	public void mouseDragged( MouseEvent event ) {}
 
 	@Override
-	public void mouseMoved( MouseEvent e ) {}
+	public void mouseMoved( MouseEvent event ) {}
 
 	private boolean testForHasMethods() {
 		
@@ -39,6 +39,21 @@ public class HappyZip extends JFrame implements MouseMotionListener {
 			return true;
 		return false;
 			
+	}
+	
+	private static class TestBlock implements Testable {
+		
+		
+		
+	}
+	private interface Testable {
+		
+		default boolean test( boolean newTest , boolean oldTests ) {
+			
+			return newTest && oldTests;
+			
+		}
+		
 	}
 
 }
